@@ -81,13 +81,13 @@ public class App
         regionNumbers[0] = rng.nextInt(regionCount);
         regionNumbers[1] = rng.nextInt(regionCount);
 
-        for (int i = 0; i < timeZones.stream().count(); i++) randomOrder[i] = -1;
-        for (int i = 0; i < timeZones.stream().count(); i++) {
+        for (int i = 0; i < zoneCount; i++) randomOrder[i] = -1;
+        for (int i = 0; i < zoneCount; i++) {
         	int nextNum = rng.nextInt(zoneCount);
         	while (doesContain(randomOrder, nextNum)) nextNum = rng.nextInt(zoneCount);
         	randomOrder[i] = nextNum;
         }
-        for (int i = 0; i < timeZones.stream().count(); i++) randomizedTimeZones.add(i, timeZones.get(randomOrder[i]));
+        for (int i = 0; i < zoneCount; i++) randomizedTimeZones.add(i, timeZones.get(randomOrder[i]));
 
         System.out.println("The current date and time in this time zone is" + System.lineSeparator() +
         		zonedNow.format(formatter));
