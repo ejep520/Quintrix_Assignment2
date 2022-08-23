@@ -1,6 +1,5 @@
 package com.quintrix.jepsen.erik;
 
-
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,43 +19,18 @@ public class App
     	int zoneCount, regionCount;
     	int[] randomOrder, regionNumbers;
     	DateTimeFormatter formatter;
-    	DateTimeFormatterBuilder builder;
     	List<String> timeZones, timeRegions, randomizedTimeZones;
-    	Random rng;
     	ZonedDateTime zonedNow, nowPlusEight;
     	
+        final DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder();
         final Duration timeSpan = Duration.ofHours(8);
-        timeZones = new ArrayList<>();
-        timeZones.add("Africa/Cairo");    // To provide contrast, this list is alphabetized.
-        timeZones.add("America/Chicago"); // It will not be by the time the user sees it.
-        timeZones.add("America/Denver");
-        timeZones.add("America/New_York");
-        timeZones.add("America/Los_Angeles");
-        timeZones.add("Antarctica/McMurdo");
-        timeZones.add("Asia/Hong_Kong");
-        timeZones.add("Asia/Kolkata");
-        timeZones.add("Asia/Seoul");
-        timeZones.add("Asia/Tokyo");
-        timeZones.add("Atlantic/Reykjavik");
-        timeZones.add("Australia/Melbourne");
-        timeZones.add("Europe/Kiev");    // Yes, thanks to a Russian invasion, we all now know
-        timeZones.add("Europe/London");  // it's spelled Kyiv, but this is how Java spells it. :P
-        timeZones.add("Europe/Moscow");
-        timeRegions = new ArrayList<>();
-        for (String thisZone: timeZones) {
-        	String prospect = thisZone.split("/")[0];
-        	if (!doesContain(timeRegions, prospect)) timeRegions.add(prospect);
-        }
+        final Random rng = new Random();
 
-        rng = new Random();
         zonedNow = ZonedDateTime.now();
         nowPlusEight = zonedNow.plus(timeSpan);
-        zoneCount = timeZones.stream().mapToInt(e -> 1).sum();
-        regionCount = timeRegions.stream().mapToInt(e -> 1).sum();
-        randomOrder = new int[zoneCount];
-        randomizedTimeZones = new ArrayList<>(zoneCount);
         regionNumbers = new int[2];
-        builder = new DateTimeFormatterBuilder();
+        timeZones = new ArrayList<>();
+        timeRegions = new ArrayList<>();
         
         // I could do this in a single line with a String pattern, or as chained method calls
         // to builder, but this is easier to understand, IMHO. 
@@ -77,10 +51,36 @@ public class App
         builder.appendValue(ChronoField.YEAR, 4, 19, SignStyle.EXCEEDS_PAD);
         formatter = builder.toFormatter();
 
+        timeZones.add("Africa/Cairo");    // To provide contrast, this list is alphabetized.
+        timeZones.add("America/Chicago"); // It will not be by the time the user sees it.
+        timeZones.add("America/Denver");
+        timeZones.add("America/New_York");
+        timeZones.add("America/Los_Angeles");
+        timeZones.add("Antarctica/McMurdo");
+        timeZones.add("Asia/Hong_Kong");
+        timeZones.add("Asia/Kolkata");
+        timeZones.add("Asia/Seoul");
+        timeZones.add("Asia/Tokyo");
+        timeZones.add("Atlantic/Reykjavik");
+        timeZones.add("Australia/Melbourne");
+        timeZones.add("Europe/Kiev");    // Yes, thanks to a Russian invasion, we all now know
+        timeZones.add("Europe/London");  // it's spelled Kyiv, but this is how Java spells it. :P
+        timeZones.add("Europe/Moscow");
+
+        for (String thisZone: timeZones) {
+        	String prospect = thisZone.split("/")[0];
+        	if (!doesContain(timeRegions, prospect)) timeRegions.add(prospect);
+        }
+
+        zoneCount = timeZones.size();
+        regionCount = timeRegions.size();
+        randomOrder = new int[zoneCount];
+        randomizedTimeZones = new ArrayList<>(zoneCount);
+
         rng.setSeed(System.currentTimeMillis());
         regionNumbers[0] = rng.nextInt(regionCount);
         regionNumbers[1] = rng.nextInt(regionCount);
-        
+
         for (int i = 0; i < timeZones.stream().count(); i++) randomOrder[i] = -1;
         for (int i = 0; i < timeZones.stream().count(); i++) {
         	int nextNum = rng.nextInt(zoneCount);
@@ -88,7 +88,7 @@ public class App
         	randomOrder[i] = nextNum;
         }
         for (int i = 0; i < timeZones.stream().count(); i++) randomizedTimeZones.add(i, timeZones.get(randomOrder[i]));
-        
+
         System.out.println("The current date and time in this time zone is" + System.lineSeparator() +
         		zonedNow.format(formatter));
         System.out.println();
@@ -129,21 +129,22 @@ public class App
         					nowPlusEight
     						.withZoneSameInstant(timeZone)
     						.format(formatter)));
+        System.out.println("All done now.");
     }
-    
+
     private static boolean doesContain(int[] array, int target) {
     	for (int i = 0; i < array.length; i++) {
     		if (array[i] == target) return true;
     	}
     	return false;
     }
+
     private static boolean doesContain(List<String> stringList, String target)
     {
-    	if (stringList.stream().mapToInt(e -> 1).sum() == 0) return false;
+    	if (stringList.size() == 0) return false;
     	for (String maybeThis: stringList) {
     		if (maybeThis.equals(target)) return true;
     	}
     	return false;
     }
-    
 }
