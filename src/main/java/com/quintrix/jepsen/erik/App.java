@@ -90,33 +90,33 @@ public class App
         for (int i = 0; i < zoneCount; i++) randomizedTimeZones.add(i, timeZones.get(randomOrder[i]));
 
         System.out.println("The current date and time in this time zone is" + System.lineSeparator() +
-        		zonedNow.format(formatter));
+        	zonedNow.format(formatter));
         System.out.println();
         System.out.println("Here is that same time in a few time zones. Their order has been randomized.");
         for (String thisZone: randomizedTimeZones) {
         	System.out.println(
-        			zonedNow
-    				.withZoneSameInstant(ZoneId.of(thisZone))
-    				.format(formatter));
+        		zonedNow
+    			.withZoneSameInstant(ZoneId.of(thisZone))
+    			.format(formatter));
         }
         System.out.println();
         System.out.printf("There is/are %d time zone(s) in %s in this list." + System.lineSeparator(),
-        		randomizedTimeZones
-        		.stream()
-        		.filter(m -> TimeFilter.filterRegion(m, timeRegions.get(regionNumbers[0])))
-        		.count(),
-        		timeRegions.get(regionNumbers[0]));
-        		// The following line could replace the .count(); above and get the same result as an integer.
-        		// .mapToInt(e -> 1).reduce(0, Integer::sum));
+        	randomizedTimeZones
+        	.stream()
+        	.filter(m -> TimeFilter.filterRegion(m, timeRegions.get(regionNumbers[0])))
+        	.count(),
+        	timeRegions.get(regionNumbers[0]));
+        	// The following line could replace the .count(); above and get the same result as an integer.
+        	// .mapToInt(e -> 1).reduce(0, Integer::sum));
         System.out.println();
         System.out.printf("The first time zone in the %s region in this randomized list is %s."
-        		+ System.lineSeparator(),
-        		timeRegions.get(regionNumbers[1]),
-        		randomizedTimeZones
-        		.stream()
-        		.filter(m -> TimeFilter.filterRegion(m, timeRegions.get(regionNumbers[1])))
-        		.findFirst()
-        		.get());
+        	+ System.lineSeparator(),
+        	timeRegions.get(regionNumbers[1]),
+        	randomizedTimeZones
+        	.stream()
+        	.filter(m -> TimeFilter.filterRegion(m, timeRegions.get(regionNumbers[1])))
+        	.findFirst()
+        	.get());
         System.out.println();
         System.out.println("Here are those same time zones eight hours later. This list may appear in a different order");
         System.out.println("due to it being processed in parallel and each thread racing for the output stream resource.");
@@ -124,11 +124,11 @@ public class App
         	.parallelStream()
         	.map(timeZone -> ZoneId.of(timeZone))
         	.forEach(timeZone -> System
-        			.out
-        			.println(
-        					nowPlusEight
-    						.withZoneSameInstant(timeZone)
-    						.format(formatter)));
+        		.out
+        		.println(
+        			nowPlusEight
+    				.withZoneSameInstant(timeZone)
+    				.format(formatter)));
         System.out.println("All done now.");
     }
 
