@@ -87,7 +87,7 @@ public class App
         	while (doesContain(randomOrder, nextNum)) nextNum = rng.nextInt(zoneCount);
         	randomOrder[i] = nextNum;
         }
-        for (int i = 0; i < zoneCount; i++) randomizedTimeZones.add(i, timeZones.get(randomOrder[i]));
+        for (int i: randomOrder) randomizedTimeZones.add(timeZones.get(i));
 
         System.out.println("The current date and time in this time zone is" + System.lineSeparator() +
         	zonedNow.format(formatter));
